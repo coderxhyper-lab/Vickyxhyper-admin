@@ -139,6 +139,18 @@ main{flex:1;min-width:0;background:radial-gradient(1000px 500px at 90% -10%,rgba
 .stat .lbl{color:var(--ink2);font-size:12.5px;font-weight:700;margin-top:2px}
 .stat .delta{font-size:12px;font-weight:800;margin-top:6px}
 .up{color:var(--green)}.down{color:var(--red)}.warn-t{color:var(--amber)}
+.qa-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.qa-tile{display:flex;align-items:center;gap:12px;text-align:left;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);padding:15px 14px;cursor:pointer;color:var(--ink);box-shadow:var(--shadow);position:relative;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;min-height:74px;width:100%}
+.qa-tile:hover{transform:translateY(-3px);border-color:rgba(201,162,39,.6);box-shadow:0 16px 34px rgba(2,8,23,.5),0 0 20px rgba(168,134,27,.12)}
+.qa-tile:active{transform:scale(.98)}
+.qa-ic{width:40px;height:40px;flex:none;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,rgba(168,134,27,.42),rgba(201,162,39,.12));color:var(--gold-ink);box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.qa-ic svg{width:20px;height:20px}
+.qa-tx{min-width:0}
+.qa-tx b{display:block;font-family:'Sora';font-size:14.5px;letter-spacing:-.01em}
+.qa-tx small{display:block;color:var(--ink3);font-size:11.5px;font-weight:700;margin-top:2px;line-height:1.35}
+.qa-bdg{position:absolute;top:10px;right:10px;background:var(--blue2);color:#fff;font-size:11px;font-weight:800;min-width:21px;height:21px;border-radius:99px;display:grid;place-items:center;padding:0 6px}
+@media(max-width:1000px){.qa-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.qa-grid{grid-template-columns:repeat(2,1fr)}}
 .grid2{display:grid;grid-template-columns:1.65fr 1fr;gap:14px}
 .grid2.eq{grid-template-columns:1fr 1fr}
 .card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
@@ -610,6 +622,19 @@ main{background:radial-gradient(900px 480px at 90% -10%,rgba(168,134,27,.13),tra
         </div>
         <div id="ovBody" style="display:none">
           <div class="stats c6" id="ovStats"></div>
+          <h3 class="sec-title" style="margin-top:2px">Quick Actions</h3>
+          <div class="qa-grid">
+            <button type="button" class="qa-tile" onclick="goView('keymgmt')"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3M17 6l3 3M14 9l2.5 2.5"/></svg></span><span class="qa-tx"><b>Keys</b><small>Generate &amp; manage keys</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('payrequests')"><span class="qa-bdg" id="qaPayBdg" style="display:none">0</span><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/></svg></span><span class="qa-tx"><b>Payments</b><small>Review &amp; approve requests</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('wallet')"><span class="qa-bdg" id="qaWalletBdg" style="display:none">0</span><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M16 12.5h.01M2.5 10h19"/></svg></span><span class="qa-tx"><b>Wallet &amp; Top-Ups</b><small>Cards &amp; top-up approvals</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('apimanager')"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l-4 3 4 3M16 9l4 3-4 3M13 5l-2 14"/></svg></span><span class="qa-tx"><b>API Manager</b><small>Add &amp; control APIs</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('users')"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c.6-3.2 3-5 6-5s5.4 1.8 6 5M16 4.6a3.5 3.5 0 0 1 0 6.8M21 20c-.4-2.3-1.6-3.9-3.4-4.6"/></svg></span><span class="qa-tx"><b>Users</b><small>Warn &amp; ban accounts</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('paycodes')"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a3 3 0 0 0 0 6v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a3 3 0 0 0 0-6Z"/><path d="M13 5v2M13 11v2M13 17v2"/></svg></span><span class="qa-tx"><b>Coupons</b><small>Payment codes &amp; offers</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('payouts')"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 6.5c-.7-1.2-2.6-2-5-2-3 0-5 1.3-5 3.2 0 4.6 10 2.4 10 6.6 0 1.9-2 3.2-5 3.2-2.4 0-4.3-.8-5-2"/></svg></span><span class="qa-tx"><b>Referral Payouts</b><small>Commission queue</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('tickets')"><span class="qa-bdg" id="qaTicketBdg" style="display:none">0</span><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.9A8 8 0 1 1 21 12Z"/></svg></span><span class="qa-tx"><b>Support Tickets</b><small>Help requests</small></span></button>
+            <button type="button" class="qa-tile" onclick="document.getElementById('notifBtn').click()"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 9a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17S18 15 18 9ZM10 20a2.2 2.2 0 0 0 4 0"/></svg></span><span class="qa-tx"><b>Notifications</b><small>Open the alerts panel</small></span></button>
+            <button type="button" class="qa-tile" onclick="goView('settings')"><span class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 0 0-.14-1.4l2-1.55-2-3.46-2.36.95A7 7 0 0 0 14 5.1L13.7 2.6h-3.4L10 5.1a7 7 0 0 0-2.5 1.44l-2.36-.95-2 3.46 2 1.55a7 7 0 0 0 0 2.8l-2 1.55 2 3.46 2.36-.95A7 7 0 0 0 10 18.9l.3 2.5h3.4l.3-2.5a7 7 0 0 0 2.5-1.44l2.36.95 2-3.46-2-1.55c.1-.45.14-.92.14-1.4Z"/></svg></span><span class="qa-tx"><b>Settings</b><small>Alerts &amp; platform rules</small></span></button>
+          </div>
           <div class="grid2">
             <div class="card">
               <h3>Searches — Last 7 Days</h3>
@@ -865,7 +890,7 @@ main{background:radial-gradient(900px 480px at 90% -10%,rgba(168,134,27,.13),tra
         <!-- WALLET TOP-UP REQUESTS -->
         <div class="card">
           <h3>Wallet Top-Up Requests</h3>
-          <div class="hint" style="margin-bottom:0">Top-up requests submitted from User and Moderator wallets. The buyer pays by UPI — the QR is generated for the exact top-up amount — and submits the UTR / transaction ID with a payment screenshot. <b style="color:var(--ink)">The wallet is credited only when you approve here</b>; declining credits nothing. Duplicate UTRs are flagged before you decide.</div>
+          <div class="hint" style="margin-bottom:0">Live top-up requests from User and Moderator wallets, loaded from the backend with amount, access key, UTR, status and date. <b style="color:var(--ink)">Approving credits the wallet on the backend</b> — nothing is ever credited from this console alone; declining credits nothing. Any backend error is shown exactly as returned.</div>
         </div>
         <div id="topupList"></div>
 
@@ -998,7 +1023,7 @@ main{background:radial-gradient(900px 480px at 90% -10%,rgba(168,134,27,.13),tra
 
       <!-- REFERRAL PAYOUTS -->
       <section class="view" id="view-payouts">
-        <div class="hint" style="color:var(--ink2);font-weight:600;margin-bottom:14px;font-size:14px;line-height:1.6">Referral commission queue — a 1-year plan pays the referrer 10% commission (₹1,200 plan = ₹120). Payouts are made as Play Store redeem codes or Paytm / UPI. Referred users receive a random 15–30% discount and 10 free searches when a referral code is used.</div>
+        <div class="hint" style="color:var(--ink2);font-weight:600;margin-bottom:14px;font-size:14px;line-height:1.6">Referral records from the backend — this is the commission payout queue. A 1-year plan pays the referrer 10% commission (₹1,200 plan = ₹120), paid out as Play Store redeem codes or Paytm / UPI. Each record shows its status: PENDING until the payout is approved, then APPROVED.</div>
         <div id="payoutList"></div>
       </section>
 
@@ -1055,9 +1080,10 @@ main{background:radial-gradient(900px 480px at 90% -10%,rgba(168,134,27,.13),tra
                 </select></div>
               <div class="fld"><label for="apiStatusNew">Start As</label>
                 <select id="apiStatusNew"><option>Enabled</option><option>Disabled</option><option>Maintenance</option></select></div>
-              <div class="fld" style="grid-column:1/-1"><label for="apiUrl">API URL</label><input id="apiUrl" type="url" placeholder="https://your-hosting.example.com/api/lookup" required />
+              <div class="fld" style="grid-column:1/-1"><label for="apiUrl">API URL</label><input id="apiUrl" type="text" placeholder="https://your-hosting.example.com/api/lookup" />
                 <div class="sub">The URL is stored on the backend and shown in this console masked — only the host is visible. Provider API keys stay server-side and are never entered or shown here.</div></div>
             </div>
+            <div class="err" id="apiFormErr" role="alert" style="margin-top:12px"></div>
             <button class="btn btn-primary" type="submit" style="max-width:280px;margin-top:14px">Add API</button>
           </form>
         </div>
@@ -1235,10 +1261,27 @@ function loadPayments(){ return apiCall("/api/payments", "GET").then(d => { payR
 function loadOverview(){ return apiCall("/api/admin/overview", "GET").then(d => { overviewData = d; }); }
 function loadApis(){ return apiCall("/api/admin/apis", "GET").then(d => { apis = (d.apis || []).map(mapApi); }); }
 function loadAdminWallet(){ return apiCall("/api/wallet", "GET").then(d => { applyAdminWallet(d.wallet || {}, d.ledger || []); }); }
+
+/* ---------- wallet top-up queue + referrals (backend) ---------- */
+function mapTopup(t){
+  const st = String(t.status || "PENDING").toUpperCase();
+  const rawDate = t.created_at != null ? t.created_at : t.date;
+  const created = rawDate != null ? (typeof rawDate === "number" ? rawDate : new Date(rawDate).getTime()) : Date.now();
+  return { id: t.id, amount: Number(t.amount || 0), key: t.key_code || t.key || "—", utr: t.utr || "—",
+    status: st === "PROCESSING" ? "PENDING" : st, created: created };
+}
+function loadTopups(){ return apiCall("/api/wallet/topups", "GET").then(d => { topupRequests = (d.topups || d.requests || []).map(mapTopup); }); }
+function mapReferral(r){
+  const created = r.created_at != null ? (typeof r.created_at === "number" ? r.created_at : new Date(r.created_at).getTime()) : null;
+  return { code: r.referrer_code || r.code || r.referrer || "—", referredKey: r.referred_key || r.key_code || r.referred || "—",
+    plan: r.plan || "—", amount: Number(r.amount || 0), commission: r.commission != null ? Number(r.commission) : null,
+    status: String(r.status || "PENDING").toUpperCase(), created: created };
+}
+function loadReferrals(){ return apiCall("/api/referral", "GET").then(d => { referrals = (d.referrals || []).map(mapReferral); }); }
 function refreshBackendData(){
   let firstErr = null;
   const guard = p => p.catch(e => { if(!firstErr) firstErr = e; });
-  return Promise.all([guard(loadKeys()), guard(loadPayments()), guard(loadOverview()), guard(loadApis()), guard(loadAdminWallet())]).then(() => {
+  return Promise.all([guard(loadKeys()), guard(loadPayments()), guard(loadOverview()), guard(loadApis()), guard(loadAdminWallet()), guard(loadTopups()), guard(loadReferrals())]).then(() => {
     if(firstErr) toast("Backend error: " + backendError(firstErr));
   });
 }
@@ -1299,6 +1342,7 @@ let receipts = [];
 let users = [];
 let moderators = [];
 let payouts = [];
+let referrals = [];
 let tickets = [];
 let sysActivity = [];
 let modActivity = [];
@@ -2210,56 +2254,56 @@ function qrSVG(amount){
   const fin = (fx, fy) => '<rect x="' + fx + '" y="' + fy + '" width="35" height="35" fill="#fff" stroke="#111" stroke-width="5"/><rect x="' + (fx + 10) + '" y="' + (fy + 10) + '" width="15" height="15"/>';
   return '<svg viewBox="0 0 105 105" fill="#111" role="img" aria-label="UPI QR code for the exact top-up amount">' + cells + fin(0, 0) + fin(70, 0) + fin(0, 70) + '</svg>';
 }
-function topupState(p){ return p.state; }
+/* Wallet top-up requests come only from GET /api/wallet/topups.
+   Approve / decline call the backend endpoints; the wallet balance is
+   credited by the backend on approval — never locally here. */
 function renderTopupRequests(){
   const box = $("#topupList"); if(!box) return;
   box.innerHTML = topupRequests.length ? topupRequests.map(p => {
-    const c = resolveCard(p.cardId);
-    const dup = topupRequests.concat(payRequests).filter(x2 => x2.txn && x2.txn === p.txn && x2.id !== p.id).length > 0;
-    const stPill = p.state === "PROCESSING" ? "amber" : p.state === "APPROVED" ? "green" : "red";
+    const stPill = p.status === "PENDING" ? "amber" : p.status === "APPROVED" ? "green" : "red";
     return '<div class="pay-card">' +
-      '<div class="pay-head"><b>' + esc(p.requester) + '</b><span class="pill blue">' + esc(p.id) + '</span><span class="pill ' + stPill + '">' + p.state + '</span><span class="pill grey">' + p.role + ' Wallet Top-Up</span>' +
-      (dup ? '<span class="pill fraud">Fraud · Duplicate Txn ID</span>' : '<span class="pill green">Txn Verified · Unique</span>') + '</div>' +
-      '<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start"><div class="qr-box">' + qrSVG(p.amount) + '</div>' +
-      '<div style="flex:1;min-width:230px"><div class="pay-meta" style="margin:0">' +
+      '<div class="pay-head"><b>' + inr(p.amount) + '</b><span class="pill blue">' + esc(String(p.id)) + '</span><span class="pill ' + stPill + '">' + p.status + '</span><span class="pill grey">Wallet Top-Up</span></div>' +
+      '<div class="pay-meta">' +
+        '<div><small>Access Key</small><span class="keycode">' + esc(p.key) + '</span></div>' +
+        '<div><small>UTR / Transaction ID</small><span class="mono">' + esc(p.utr) + '</span></div>' +
         '<div><small>Top-Up Amount</small>' + inr(p.amount) + '</div>' +
-        '<div><small>UTR / Transaction ID</small><span class="mono">' + esc(p.txn) + '</span></div>' +
-        '<div><small>Wallet Card</small><span class="mono">' + esc(c ? c.state.masked : "—") + '</span></div>' +
-        '<div><small>Submitted</small>' + fmtDT(p.submittedAt) + '</div>' +
+        '<div><small>Submitted</small>' + fmtDT(p.created) + '</div>' +
       '</div>' +
-      '<div class="shot" style="margin-top:10px">Payment screenshot attached — <b>' + esc(p.screenshot) + '</b> (stored with role-based access · retained 30 days)</div></div></div>' +
-      '<div class="warn-line">Payable by UPI QR for the exact amount of ' + inr(p.amount) + '. The wallet is credited <b>only on approval</b> — nothing is credited automatically.</div>' +
-      (p.state === "APPROVED" && p.creditedTxn ? '<div class="warn-line ok-line">Approved — wallet credited ' + inr(p.amount) + ' · Ledger ' + esc(p.creditedTxn) + '.</div>' : '') +
-      (p.state === "DECLINED" && p.reason ? '<div class="warn-line">Decline reason recorded: ' + esc(p.reason) + '</div>' : '') +
-      (p.state === "PROCESSING" ? '<div class="pay-actions"><button class="btn btn-green" onclick="approveTopup(\'' + p.id + '\')">Approve &amp; Credit Wallet</button><button class="btn btn-danger" onclick="declineTopup(\'' + p.id + '\')">Decline</button></div>' : '') +
+      '<div class="warn-line">The wallet is credited <b>only when you approve</b> — the credit is applied by the backend. Declining credits nothing.</div>' +
+      (p.status === "PENDING" ? '<div class="pay-actions"><button class="btn btn-green" onclick="approveTopup(\'' + p.id + '\')">Approve &amp; Credit Wallet</button><button class="btn btn-danger" onclick="declineTopup(\'' + p.id + '\')">Decline</button></div>' : '') +
     '</div>';
-  }).join("") : '<div class="empty" style="margin-bottom:14px">No wallet top-up requests yet — requests submitted from User and Moderator wallets (UPI QR payment + UTR + screenshot) will appear here for approval. Nothing is credited before approval.</div>';
+  }).join("") : '<div class="empty" style="margin-bottom:14px">No wallet top-up requests yet — requests submitted from User and Moderator wallets will appear here for approval. Nothing is credited before approval.</div>';
+  const pend = topupRequests.filter(x => x.status === "PENDING").length;
+  const wb = $("#qaWalletBdg"); if(wb){ wb.textContent = pend; wb.style.display = pend ? "" : "none"; }
 }
 function approveTopup(id){
-  const p = topupRequests.find(x => x.id === id); if(!p) return;
-  if(p.state !== "PROCESSING"){ toast("This top-up request is already decided"); return; }
-  const c = resolveCard(p.cardId);
-  if(!c){ toast("The requester's wallet no longer exists"); return; }
-  if(effectiveCardStatus(c.state) !== "ACTIVE"){ toast("Card is " + effectiveCardStatus(c.state) + " — a blocked card cannot be topped up until unblocked"); return; }
-  if(!c.state.topupEnabled){ toast("Top-Up is switched off for this card in Card Settings"); return; }
-  askGate("Approve Top-Up?", "Approving credits <b>" + inr(p.amount) + "</b> to " + esc(p.requester) + "'s wallet exactly once and writes the ledger entry.", "Approve & Credit", () => {
-    const before = c.balance(); c.credit(p.amount);
-    p.creditedTxn = ledgerCustom(c.label, "Credit — Wallet top-up approved (" + p.id + ")", p.amount, before, c.balance());
-    p.state = "APPROVED";
-    addSys("<b>Wallet top-up approved</b> — " + p.id + " · " + inr(p.amount) + " to " + esc(p.requester), "var(--green)");
-    addNotif("<b>Top-up approved</b> — " + esc(p.requester) + " wallet credited " + inr(p.amount) + ".");
-    renderAll(); toast("Top-up approved — wallet credited " + inr(p.amount));
+  const p = topupRequests.find(x => String(x.id) === String(id)); if(!p) return;
+  if(p.status !== "PENDING"){ toast("This top-up request is already decided"); return; }
+  askGate("Approve Top-Up?", "Approving credits <b>" + inr(p.amount) + "</b> to the wallet of key <b>" + esc(p.key) + "</b> on the backend (UTR " + esc(p.utr) + "). The credit is applied by the server — this console never credits a wallet locally.", "Approve & Credit", () => {
+    apiCall("/api/wallet/topup/" + encodeURIComponent(id) + "/approve", "POST", {})
+      .then(() => Promise.all([loadTopups(), loadAdminWallet().catch(() => {})]))
+      .then(() => {
+        addSys("<b>Wallet top-up approved</b> — " + esc(String(p.id)) + " · " + inr(p.amount) + " to key " + esc(p.key), "var(--green)");
+        addNotif("<b>Top-up approved</b> — wallet for " + esc(p.key) + " credited " + inr(p.amount) + " on the backend.");
+        renderAll(); toast("Top-up approved — backend credited " + inr(p.amount));
+      })
+      .catch(e => toast("Backend error: " + backendError(e)));
   });
 }
 function declineTopup(id){
-  const p = topupRequests.find(x => x.id === id); if(!p) return;
-  const body = '<div class="fld"><label for="tdReason">Decline Reason (required, shown to the requester)</label><input id="tdReason" type="text" placeholder="e.g. UTR did not match the screenshot amount" /></div>';
+  const p = topupRequests.find(x => String(x.id) === String(id)); if(!p) return;
+  if(p.status !== "PENDING"){ toast("This top-up request is already decided"); return; }
+  const body = '<div class="fld"><label for="tdReason">Decline Reason (required, shown to the requester)</label><input id="tdReason" type="text" placeholder="e.g. UTR did not match the payment" /></div>';
   openModal("Decline Top-Up — " + id, "Declining credits <b>nothing</b> to the wallet.", body, "Decline Request", () => {
     const reason = document.getElementById("tdReason").value.trim();
     if(!reason){ toast("A decline reason is required"); return; }
-    p.state = "DECLINED"; p.reason = reason;
-    addSys("<b>Wallet top-up declined</b> — " + p.id + " · " + esc(reason), "var(--red)");
-    renderAll(); toast("Top-up declined — nothing credited");
+    apiCall("/api/wallet/topup/" + encodeURIComponent(id) + "/decline", "POST", { reason: reason })
+      .then(() => loadTopups())
+      .then(() => {
+        addSys("<b>Wallet top-up declined</b> — " + esc(String(p.id)) + " · " + esc(reason), "var(--red)");
+        renderAll(); toast("Top-up declined — nothing credited");
+      })
+      .catch(e => toast("Backend error: " + backendError(e)));
   }, true);
 }
 
@@ -2303,6 +2347,7 @@ function reqState(p){ return p.state; }
 function renderPayments(){
   const pendingCount = payRequests.filter(p => reqState(p) === "PROCESSING").length;
   const badge = $("#payBadge"); badge.textContent = pendingCount; badge.style.display = pendingCount ? "" : "none";
+  const qaB = $("#qaPayBdg"); if(qaB){ qaB.textContent = pendingCount; qaB.style.display = pendingCount ? "" : "none"; }
   const all = payRequests.map(p => ({ p: p, st: reqState(p) }));
   const shown = all.filter(x => !payFilter || x.st === payFilter);
   $("#payList").innerHTML = shown.length ? shown.map(({ p, st }) => {
@@ -2342,14 +2387,21 @@ function approvePay(id){
   askGate("Approve Payment?", "Approving " + p.id + " (" + p.plan + ", " + inr(p.price) + ") generates the purchased Access Key exactly once on the backend and attaches it to this request.", "Approve & Generate Key", () => {
     apiCall("/api/payments/" + encodeURIComponent(id) + "/approve", "POST", {})
       .then(d => {
-        p.generatedKey = d.generated_key || null; p.state = "APPROVED";
-        payHistory.unshift(payToHistory(p));
-        receipts.unshift(payToReceipt(p));
-        addSys("<b>Payment approved</b> — " + p.id + " · key " + (p.generatedKey || "") + " generated", "var(--green)");
+        const genKey = d.generated_key || null;
+        addSys("<b>Payment approved</b> — " + p.id + " · key generated on the backend", "var(--green)");
         addNotif("<b>Payment approved</b> — " + p.id + " · key delivered to buyer notification panel and email.");
-        return loadKeys();
+        return Promise.all([loadPayments(), loadKeys()]).then(() => {
+          renderAll();
+          if(genKey){
+            /* The backend-generated key is shown exactly once in this
+               confirmation, with a copy action; the list is then refreshed
+               from the backend, which is the source of truth. */
+            openModal("Access Key Generated — " + p.id, "The backend generated this key exactly once for this payment. Copy it now — the approved request in Payment Requests has been refreshed from the backend.", '<div class="value-box"><span class="keycode" style="font-size:14px">' + esc(genKey) + '</span></div>', "Copy Key", () => copyKey(genKey), false);
+          } else {
+            toast("Approved — the backend did not return a key for this request");
+          }
+        });
       })
-      .then(() => { renderAll(); toast("Approved — key generated: " + (p.generatedKey || "")); })
       .catch(e => toast("Backend error: " + backendError(e)));
   });
 }
@@ -2360,9 +2412,8 @@ function declinePay(id){
     const reason = document.getElementById("decReason").value.trim();
     if(!reason){ toast("A decline reason is required"); return; }
     apiCall("/api/payments/" + encodeURIComponent(id) + "/decline", "POST", { reason: reason })
+      .then(() => loadPayments())
       .then(() => {
-        p.state = "DECLINED"; p.reason = reason;
-        payHistory.unshift(payToHistory(p));
         addSys("<b>Payment declined</b> — " + p.id + " · " + esc(reason), "var(--red)");
         addNotif("<b>Payment declined</b> — " + p.id + ". No key was generated.");
         renderAll(); toast("Request declined — no key generated");
@@ -2463,16 +2514,25 @@ function viewReceipt(i){
 }
 
 /* ---------- payouts ---------- */
+/* Referral view — every row comes from GET /api/referral (Admin sees all
+   referrals). Nothing is listed until the backend returns it. */
 function renderPayouts(){
-  const b = $("#payoutBadge"); b.textContent = payouts.length; b.style.display = payouts.length ? "" : "none";
-  $("#payoutList").innerHTML = payouts.length ? payouts.map(p =>
-    '<div class="pay-card"><div class="pay-head"><b>' + esc(p.user) + '</b><span class="pill amber">' + inr(p.amount) + ' pending</span></div>' +
-    '<div style="font-size:13.5px;color:var(--ink2)">' + esc(p.detail) + '<br>Method: <b style="color:var(--ink)">' + esc(p.method) + '</b></div>' +
-    '<div class="pay-actions"><button class="btn btn-green" onclick="payOut(' + p.id + ')">Mark as Paid</button></div></div>').join("")
-    : '<div class="empty">The payout queue is empty — all commissions are clear.</div>';
-}
-function payOut(id){
-  toast("Payouts are not processed by the backend yet — nothing was paid out.");
+  const pending = referrals.filter(r => r.status === "PENDING").length;
+  const b = $("#payoutBadge"); if(b){ b.textContent = pending; b.style.display = pending ? "" : "none"; }
+  const statsHtml = '<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">' +
+    [["Total Referrals", referrals.length], ["Pending Payout", pending], ["Approved", referrals.filter(r => r.status === "APPROVED").length], ["Referred Sales", inr(referrals.reduce((s, r) => s + r.amount, 0))]]
+    .map(c => '<div class="stat"><div class="num">' + c[1] + '</div><div class="lbl">' + c[0] + '</div></div>').join("") + '</div>';
+  $("#payoutList").innerHTML = statsHtml + (referrals.length ? referrals.map(r =>
+    '<div class="pay-card"><div class="pay-head"><span class="keycode">' + esc(r.code) + '</span><span class="pill ' + (r.status === "APPROVED" ? "green" : "amber") + '">' + r.status + '</span><span class="pill grey">Referral</span></div>' +
+    '<div class="pay-meta">' +
+      '<div><small>Referrer Code</small><span class="mono">' + esc(r.code) + '</span></div>' +
+      '<div><small>Referred Key</small><span class="keycode">' + esc(r.referredKey) + '</span></div>' +
+      '<div><small>Plan</small>' + esc(r.plan) + '</div>' +
+      '<div><small>Amount</small>' + inr(r.amount) + '</div>' +
+      (r.commission != null ? '<div><small>Commission</small>' + inr(r.commission) + '</div>' : '') +
+      (r.created ? '<div><small>Date</small>' + fmtDT(r.created) + '</div>' : '') +
+    '</div></div>').join("")
+    : '<div class="empty">No referrals yet — referral records returned by the backend will appear here as the payout queue.</div>');
 }
 
 /* ---------- search activity / devices / tickets ---------- */
@@ -2524,6 +2584,7 @@ function removeDevice(i){
 function renderTickets(){
   const open = tickets.filter(t => t.status === "Open").length;
   const b = $("#ticketBadge"); b.textContent = open; b.style.display = open ? "" : "none";
+  const qaT = $("#qaTicketBdg"); if(qaT){ qaT.textContent = open; qaT.style.display = open ? "" : "none"; }
   $("#ticketList").innerHTML = tickets.length ? tickets.map(t =>
     '<div class="pay-card"><div class="pay-head"><b>' + esc(t.topic) + '</b><span class="pill ' + (t.status === "Open" ? "amber" : "green") + '">' + t.status + '</span></div>' +
     '<div style="font-size:13.5px;color:var(--ink2)"><b style="color:var(--ink)">' + esc(t.user) + ':</b> ' + esc(t.msg) + '</div>' +
@@ -2618,10 +2679,12 @@ function setApiStatus(id, st){
 function checkApi(id){
   const a = apis.find(x => x.id === id); if(!a) return;
   apiCall("/api/admin/api-health", "GET").then(d => {
-    const row = (d.apis || []).find(x => x.id === id);
-    if(row){ a.checkedAt = row.last_checked || Date.now(); }
-    renderApis();
-    toast(a.status === "Enabled" ? a.name + " checked — live and serving " + a.category : a.name + " checked — " + a.status + ", not used for lookups");
+    const row = (d.apis || []).find(x => String(x.id) === String(id));
+    return loadApis().then(() => {
+      renderApis();
+      if(row && row.ok === false) toast(a.name + " check — the backend reports this API is not responding");
+      else toast(a.status === "Enabled" ? a.name + " checked — live and serving " + a.category : a.name + " checked — " + a.status + ", not used for lookups");
+    });
   }).catch(e => toast("Backend error: " + backendError(e)));
 }
 function deleteApi(id){
@@ -2635,22 +2698,33 @@ function deleteApi(id){
 }
 $("#apiForm").addEventListener("submit", e => {
   e.preventDefault();
+  /* The backend's exact error message is shown in the form (and as a
+     toast) — never hidden. On success the API list is reloaded from
+     GET /api/admin/apis so the new API appears from backend data. */
+  const errBox = $("#apiFormErr");
+  const showApiErr = m => { if(errBox){ errBox.textContent = m; errBox.classList.remove("on"); void errBox.offsetWidth; errBox.classList.add("on"); } toast("Backend error: " + m); };
+  if(errBox){ errBox.textContent = ""; errBox.classList.remove("on"); }
   const name = $("#apiName").value.trim(), url = $("#apiUrl").value.trim(), category = $("#apiCat").value;
-  if(!name || !url){ toast("Name and API URL are both required"); return; }
-  if(API_CATS.indexOf(category) < 0){ toast("Pick a valid category"); return; }
+  if(!name || !url){ showApiErr("Name and API URL are both required"); return; }
+  if(!/^https?:\/\//i.test(url)){ showApiErr("API URL must start with http:// or https://"); return; }
+  if(API_CATS.indexOf(category) < 0){ showApiErr("Pick a valid category"); return; }
   const startAs = $("#apiStatusNew").value;
+  const btn = e.target.querySelector('button[type="submit"]');
+  if(btn){ btn.disabled = true; btn.textContent = "Adding…"; }
   apiCall("/api/admin/apis", "POST", { name: name, url: url, category: category })
     .then(d => {
-      if(startAs !== "Enabled" && d.id) return apiCall("/api/admin/apis/" + encodeURIComponent(d.id), "PATCH", { status: startAs.toUpperCase() });
+      const newId = d.id || (d.api && d.api.id);
+      if(startAs !== "Enabled" && newId) return apiCall("/api/admin/apis/" + encodeURIComponent(newId), "PATCH", { status: startAs.toUpperCase() });
     })
     .then(() => loadApis())
     .then(() => {
+      if(btn){ btn.disabled = false; btn.textContent = "Add API"; }
       addSys("<b>API added</b> — " + esc(name) + " (" + esc(API_CAT_LABELS[category] || category) + ") · " + startAs, "var(--green)");
       addNotif("<b>API added</b> — " + esc(name) + " is " + startAs + ".");
       e.target.reset(); renderApis();
       toast(startAs === "Enabled" ? "API live: " + name : "API added: " + name + " (" + startAs + ")");
     })
-    .catch(ex => toast("Backend error: " + backendError(ex)));
+    .catch(ex => { if(btn){ btn.disabled = false; btn.textContent = "Add API"; } showApiErr(backendError(ex)); });
 });
 
 /* ---------- payments: UPI apps, QR, card pay + gold coin ---------- */
