@@ -901,6 +901,35 @@ html[data-pal] body{background:var(--p-bg)}
 </style>
 </head>
 <body>
+<script>
+/* Visit ping — fire-and-forget on every page load (before login too).
+   Sends only {site:"admin", visitor_id} to the public endpoint.
+   visitor_id is a random id kept in localStorage ("vx-visitor-id").
+   No key/header, no personal data, and any failure is silent so
+   login and the console work exactly as before. */
+(function(){
+  try {
+    var K = "vx-visitor-id", id = null;
+    try { id = localStorage.getItem(K); } catch(e){}
+    if(!id){
+      if(window.crypto && typeof crypto.randomUUID === "function") id = crypto.randomUUID();
+      else if(window.crypto && crypto.getRandomValues){
+        var b = new Uint8Array(16); crypto.getRandomValues(b);
+        id = "vx-" + Array.prototype.map.call(b, function(x){ return ("0" + x.toString(16)).slice(-2); }).join("");
+      } else id = "vx-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
+      try { localStorage.setItem(K, id); } catch(e){}
+    }
+    try {
+      fetch("https://vickyxhyper.coderxhyper.workers.dev/api/visit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ site: "admin", visitor_id: id }),
+        keepalive: true
+      }).catch(function(){});
+    } catch(e){}
+  } catch(e){}
+})();
+</script>
 
 <!-- ================= SPLASH ================= -->
 <div id="splash" aria-hidden="true">
@@ -1009,6 +1038,10 @@ html[data-pal] body{background:var(--p-bg)}
       </div>
       <div id="dashBody" style="display:none">
         <div class="stat-grid" id="statGrid"></div>
+        <div class="card rise" style="--i:1;margin-bottom:16px" id="visitsCard">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Website Visits</h3>
+          <div id="visitsBody" style="margin-top:14px"><p style="color:var(--ink-3);font-weight:600;font-size:13.5px">Loading visits…</p></div>
+        </div>
         <div class="grid-2">
           <div class="card rise" style="--i:1">
             <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Key Status</h3>
@@ -1590,6 +1623,59 @@ function devText(k){
 function loadKeys(){ return apiCall("/api/keys", "GET").then(d => { keys = (d.keys || []).map(mapKey); }); }
 function loadOverview(){ return apiCall("/api/admin/overview", "GET").then(d => { overviewData = d || overviewData; }); }
 function loadApis(){ return apiCall("/api/admin/apis", "GET").then(d => { apis = (d.apis || []).map(mapApi); }); }
+/* ---------- Website Visits (dashboard card) ----------
+   Fresh fetch on every dashboard load: GET /api/admin/visits with the
+   Admin key (x-access-key via apiCall). If the endpoint is not live
+   yet or errors, the card quietly shows the not-available note —
+   no toast, no popup, nothing else breaks. */
+function visitsPick(obj, keys){
+  if(!obj || typeof obj !== "object") return undefined;
+  for(var i = 0; i < keys.length; i++){ var v = obj[keys[i]]; if(v !== undefined && v !== null && v !== "") return v; }
+  return undefined;
+}
+function visitsNum(v){ var n = Number(v); return isFinite(n) ? n : 0; }
+function renderVisitsUnavailable(){
+  var el = document.getElementById("visitsBody"); if(!el) return;
+  el.innerHTML = '<p style="color:var(--ink-3);font-weight:600;font-size:13.5px;line-height:1.6">Not available yet — backend deploy ke baad dikhega</p>';
+}
+function loadVisits(){
+  var el = document.getElementById("visitsBody"); if(!el) return;
+  if(!adminKey){ renderVisitsUnavailable(); return; }
+  el.innerHTML = '<p style="color:var(--ink-3);font-weight:600;font-size:13.5px">Loading visits…</p>';
+  apiCall("/api/admin/visits", "GET").then(function(d){
+    var root = (d && (d.visits || d.data || d.stats)) || d || {};
+    if(root && root.visits && typeof root.visits === "object" && !visitsPick(root, ["total_opens","totalOpens","total","opens"])) root = root.visits;
+    var totalOpens = visitsPick(root, ["total_opens","totalOpens","total","opens","total_visits","total_count","all_opens"]);
+    var uniqueVisitors = visitsPick(root, ["unique_visitors","uniqueVisitors","unique","uniques","unique_count","total_unique"]);
+    var last24Opens = visitsPick(root, ["last24h_opens","last_24h_opens","last24_opens","opens_24h","opens_last_24h","last_24h_opens","recent_opens","today_opens"]);
+    var last24Unique = visitsPick(root, ["last24h_unique","last_24h_unique","last24_unique","unique_24h","uniques_last_24h","unique_last_24h","last_24h_unique","recent_unique","today_unique"]);
+    var sites = (root && (root.sites || root.by_site || root.per_site)) || {};
+    var userObj = visitsPick(root, ["user","user_site","userSite"]) || sites.user || sites.user_site || {};
+    var adminObj = visitsPick(root, ["admin","admin_site","adminSite"]) || sites.admin || sites.admin_site || {};
+    if(typeof userObj !== "object") userObj = {};
+    if(typeof adminObj !== "object") adminObj = {};
+    var userOpens = visitsPick(userObj, ["opens","total_opens","total","count","visits"]);
+    var userUnique = visitsPick(userObj, ["unique","unique_visitors","uniques","unique_count","visitors"]);
+    var adminOpens = visitsPick(adminObj, ["opens","total_opens","total","count","visits"]);
+    var adminUnique = visitsPick(adminObj, ["unique","unique_visitors","uniques","unique_count","visitors"]);
+    /* Nothing recognisable came back — treat as not deployed yet. */
+    if(totalOpens === undefined && uniqueVisitors === undefined && last24Opens === undefined && userOpens === undefined && adminOpens === undefined){ renderVisitsUnavailable(); return; }
+    var fmt = function(v){ return visitsNum(v).toLocaleString("en-IN"); };
+    var cell = function(label, val){ return '<div style="background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:13px 14px"><div style="font-family:Sora,sans-serif;font-size:24px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums">' + fmt(val) + '</div><div style="color:var(--ink-3);font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:6px">' + label + '</div></div>'; };
+    var row = function(label, o, u){ return '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 2px;border-bottom:1px solid var(--line)"><b style="font-size:13.5px;flex:1;min-width:110px">' + label + '</b><span style="color:var(--ink-2);font-size:13px;font-weight:700">' + fmt(o) + ' opens</span><span style="color:var(--ink-3);font-size:12.5px;font-weight:700">·</span><span style="color:var(--ink-2);font-size:13px;font-weight:700">' + fmt(u) + ' unique</span></div>'; };
+    el.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:10px">' +
+        cell("Total opens", totalOpens) +
+        cell("Unique visitors", uniqueVisitors) +
+        cell("Last 24h opens", last24Opens) +
+        cell("Last 24h unique", last24Unique) +
+      '</div>' +
+      '<div style="margin-top:8px">' +
+        row("User site", userOpens, userUnique) +
+        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 2px"><b style="font-size:13.5px;flex:1;min-width:110px">Admin site</b><span style="color:var(--ink-2);font-size:13px;font-weight:700">' + fmt(adminOpens) + ' opens</span><span style="color:var(--ink-3);font-size:12.5px;font-weight:700">·</span><span style="color:var(--ink-2);font-size:13px;font-weight:700">' + fmt(adminUnique) + ' unique</span></div>' +
+      '</div>';
+  }).catch(function(){ renderVisitsUnavailable(); });
+}
 function refreshBackendData(){
   let firstErr = null;
   const guard = p => p.catch(e => { if(!firstErr) firstErr = e; });
@@ -1766,6 +1852,7 @@ function startSession(){
   goView("dashboard");
   refreshBackendData().then(() => {
     renderAll();
+    loadVisits();
     const sk = $("#dashSkeleton"), bd = $("#dashBody");
     if(sk) sk.style.display = "none";
     if(bd) bd.style.display = "";
@@ -1846,13 +1933,14 @@ function goView(name){
   $$("#drawerNav button").forEach(b => b.classList.toggle("active", b.getAttribute("data-dview") === name));
   closeDrawer();
   const t = TITLES[name]; if(t){ $("#pageTitle").textContent = t[0]; $("#pageSub").textContent = t[1]; }
+  if(name === "dashboard" && sessionOn) loadVisits();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 $("#bellBtn").addEventListener("click", () => goView("notifications"));
 $("#quickGenBtn").addEventListener("click", () => goView("generator"));
 $("#refreshBtn").addEventListener("click", () => {
   toast("Refreshing from backend…");
-  refreshBackendData().then(renderAll);
+  refreshBackendData().then(() => { renderAll(); if(currentView === "dashboard") loadVisits(); });
 });
 
 /* ============================================================
@@ -2335,7 +2423,7 @@ $("#apiHealthBtn").addEventListener("click", () => {
     return loadApis().then(() => { renderApis(); toast(bad ? bad + " API(s) not responding — see API Settings" : "All registered APIs responded"); });
   }).catch(e => toast("Backend error: " + backendError(e)));
 });
-$("#reloadBtn").addEventListener("click", () => { toast("Reloading from backend…"); refreshBackendData().then(renderAll); });
+$("#reloadBtn").addEventListener("click", () => { toast("Reloading from backend…"); refreshBackendData().then(() => { renderAll(); loadVisits(); }); });
 $("#logoutBtn2").addEventListener("click", doLogout);
 </script>
 </body>
